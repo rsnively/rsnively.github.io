@@ -1,0 +1,29 @@
+<html>
+<body>
+<title>Project Euler Problem 1</title>
+    <h1>Problem 1</h1>
+        <h2>The Problem:</h2>
+            <p>If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.<br><br>Find the sum of all the multiples of 3 or 5 below 1000.<p>
+        <h2>The Solution:</h2>
+            <p>This problem is more of an exercise using the website than in actual coding... But there are some cool tidbits of optimization here.</p>
+            <p>This is the naivest approach I can think of:
+                <pre><code>#include <iostream>
+                           using namespace std;
+                           
+                           int main()
+                           {
+                               int sum = 0;
+                               for (int i = 0; i < 1000; i++)
+                               {
+                                   if (i % 3 == 0 || i % 5 == 0)
+                                   {
+                                       sum += i;
+                                   }
+                               }
+                               cout << sum << endl;
+                           }
+                           </code></pre></p>
+                           
+
+</body>
+</html>
