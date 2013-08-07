@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="icon"
+	  type="image/jpg"
+	  href="../images/icon.jpg">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+<title>Rory's Web Thing</title>
+</head>
+
+<body>
+<div id="container">
+  	<div id="header">
+        <h1>Rory<span class="off">Snively</span></h1>
+			<h2>Mostly nonsense</h2>
+    </div>   
+        
+    <div id="menu">
+        <ul>
+            <li class="menuitem"><a href="../index.html">Home</a></li>
+            <li class="menuitem"><a href="../about.html">About</a></li>
+            <li class="menuitem"><a href="../blog.html">Blog</a></li>
+            <li class="menuitem"><a href="../projects.html">Projects</a></li>
+            <li class="menuitem"><a href="../contact.html">Contact</a></li>
+        </ul>
+    </div>
+	
+	<div id="leftmenu">
+		<div id="leftmenu_top"></div>
+		<div id="leftmenu_main">
+			<h3>Links</h3>
+				<ul>
+					<li><a href="http://www.projecteuler.net">Project Euler</a></li>
+                    <li><a href="index.html">All Problems</a></li>
+					<li><a href="problem2.html">Next Problem (2)</a></li>
+				</ul>
+			</div>
+		<div id="leftmenu_bottom"></div>
+	</div>
+	
+	<div id="content">
+		<div id="content_top"></div>
+		<div id="content_main">
+            <h2>Problem 1: Multiples of 3 and 5</h2>
+                <p>&nbsp;</p>
+                <h3>The Problem</h3>
+                    <p>If we list all the natural numbers below 10 that are multiples of 3 or 5, we get 3, 5, 6 and 9. The sum of these multiples is 23.<br><br>Find the sum of all the multiples of 3 or 5 below 1000.<p>
+                    <p>&nbsp;</p>
+                <h3>The Solution</h3>
+                    <p>This problem is more of an exercise using the website than in actual coding... It brings to mind<a href='http://imranontech.com/2007/01/24/using-fizzbuzz-to-find-developers-who-grok-coding/'> this article</a> about programming interviews (as well as the interview I had for my student developer job which employed just this question). But there are some cool tidbits of optimization here.</p>
+                    <p>&nbsp;</p>
+                    <p>This is the naivest approach I can think of:
+                    <pre><code>
+<font color="blue">&#35;include</font> <font color=#700000>&lt;iostream&gt;</font>
+<font color="blue">using namespace</font> std;
+                           
+<font color="blue">int</font> main()
+{
+    <font color="blue">int</font> sum = 0;
+    <font color="blue">for</font> (<font color="blue">int</font> i = 0; i < 1000; i++)
+    {
+        <font color="blue">if</font> (i % 3 == 0 || i % 5 == 0)
+        {
+            sum += i;
+        }
+    }
+    cout << sum << endl;
+}
+                    </code></pre></p>
+                <p>&nbsp;</p>
+                <p>While certainly not computationally intensive, this solution is sloppy. Imagine performing such an operation on billions of numbers, or with a larger amount of conditions; it could take ages. </p>
+                <p>&nbsp;</p>
+                <p>The most efficient way to solve this problem is with a simple approach using arithmetic.
+                <pre><code>
+<font color="blue">&#35;include</font> <font color=#700000>&lt;iostream&gt;</font>
+<font color="blue">using namespace</font> std;
+
+<font color="blue">int</font> main()
+{
+    <font color="green">// The greatest common multiple of 3 and 5 below 1000 is 990. The rest of
+    // our calculations will concern only numbers up to this point. So we
+    // account for the remaining numbers (993, 995, 996, and 999) by using
+    // our less-than-optimal solution from 991 to 1000.</font>
+    <font color="blue">int</font> n1 = 0;
+    <font color="blue">for</font> (<font color="blue">int</font> i = 991; i <= 1000; i++)
+    {
+        <font color="blue">if</font> (i % 3 == 0 || i % 5 == 0)
+        {
+            n1 += i;
+        }
+    }
+
+    <font color="green">// Next we find all of the numbers between 0 and 990 which are multiples
+    // of three using a slight modification of the formula from that cliche
+    // story about a young Gauss. (The 330 comes from there being 330 such
+    // multiples).</font>
+    <font color="blue">int</font> n2 = 330.0 * (990.0 + 3.0) / 2.0;
+
+    <font color="green">// And similarly for the multiples of 5. (There are 198 multiples of 5
+    // in the range we are considering).</font>
+    <font color="blue">int</font> n3 = 198.0 * (990.0 + 5.0) / 2.0;
+	
+    <font color="green">// Now we must account for the multiples of 15, which have been considered
+    // twice in our calculations and must be subtracted once. (There are 66
+    // multiples of 15 in the range we are considering).</font>
+    <font color="blue">int</font> n4 = 66.0 * (990.0 + 15.0) / 2.0;
+	
+    <font color="green">// The solution can be found by some basic arithmetic.</font>
+    <font color="blue">int</font> solution = n1 + n2 + n3 - n4;
+	
+    cout << solution << endl;
+}
+                </code></pre></p>
+                <p>&nbsp;</p>
+                <p>Now we have a solution that is linear in the number of conditions to check for, rather than depending on the range of numbers we must check. At this point, a <i>good</i> programmer would write code that could do this problem for any number of conditions. Maybe someday I'll meet one... </p>
+                <p>&nbsp;</p>
+            </div>
+		<div id="content_bottom"></div>
+        <div id="footer"><h3><a href="#">back to top</a></h3></div>
+	</div>
+</body>
+</html>
