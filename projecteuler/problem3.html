@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="icon"
+	  type="image/jpg"
+	  href="../images/icon.jpg">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+<title>Rory's Web Thing</title>
+</head>
+
+<body>
+<div id="container">
+  	<div id="header">
+        <h1>Rory<span class="off">Snively</span></h1>
+			<h2>Mostly nonsense</h2>
+    </div>   
+        
+    <div id="menu">
+        <ul>
+            <li class="menuitem"><a href="../index.html">Home</a></li>
+            <li class="menuitem"><a href="../about.html">About</a></li>
+            <li class="menuitem"><a href="../blog.html">Blog</a></li>
+            <li class="menuitem"><a href="../classes/index.html">Classes</a></li>
+            <li class="menuitem"><a href="../projects.html">Projects</a></li>
+            <li class="menuitem"><a href="../contact.html">Contact</a></li>
+        </ul>
+    </div>
+	
+	<div id="leftmenu">
+		<div id="leftmenu_top"></div>
+		<div id="leftmenu_main">
+			<h3>Links</h3>
+				<ul>
+					<li><a href="http://www.projecteuler.net">Project Euler</a></li>
+                    <li><a href="index.html">All Problems</a></li>
+                    <li><a href="problem2.html">Previous Problem(2)</a></li>
+					<li><a href="problem4.html">Next Problem (4)</a></li>
+				</ul>
+			</div>
+		<div id="leftmenu_bottom"></div>
+	</div>
+	
+	<div id="content">
+		<div id="content_top"></div>
+		<div id="content_main">
+            <h2>Problem 3: Largest Prime Factor</h2>
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                <h3>The Problem</h3>
+                    <p>The prime factrs of 13195 are 5, 7, 13, and 29.</br></br>What is the largest prime factor of the number 600851475143?<p>
+                    <p>&nbsp;</p>
+                <h3>The Solution</h3>
+                    <p>Spoiler Alert: This website looooooves to make puzzles about prime numbers. Eventually, the become very zealous in their efforts to make us get creative. For this problem, however, we can throw together the sloppiest of prime number tests and still get the answer somewhat quickly (in 32ms on my machine).</p>
+                    <p>&nbsp;</p>
+                    <p>Never admit to writing code like this:
+                    <pre><code>
+<font color="blue">&#35;include</font> <font color=#700000>&lt;iostream&gt;</font>
+<font color="blue">using namespace</font> std;
+
+<font color="blue">const long long</font> number = 600851475143;
+
+<font color="green">// This constant is important in limiting the number of numbers we search
+// through. We know that the largest possible factor of any number is its
+// square root, so it's pointless to look at numbers beyond this one.</font>
+<font color="blue">const long long</font> square = pow(number, 0.5);
+                           
+<font color="blue">int</font> main()
+{
+    <font color="green">// What will eventually contain our largest prime factor.</font>
+    <font color="blue">long long</font> max = 0;
+    
+    <font color="green">// Optimizing all the way, we start from 3 because except for 2, there is
+    // no prime factor which is even (thus we also increment by 2 instead of 1).</font>
+    <font color="blue">for</font> (<font color="blue">long long</font> i = 3; i <= square; i += 2)
+    {
+        <font color="green">// First we see if our number is divisible by this index.</font>
+        <font color="blue">if</font> (number % i == 0) 
+        {
+            <font color="green">// Now we use the grossest, most disgusting means of determining if
+            // i is prime. Rated PG-13.</font>
+            <font color="blue">bool</font> prime = <font color="blue">true</font>;
+            <font color="blue">long long</font> square_i = pow(i, 0.5);
+            <font color="blue">for</font> (<font color="blue">long long</font> j = 2; prime && j < square_i; j++)
+            {
+                <font color="blue">if</font> (i % j == 0)
+                {
+                    prime = <font color="blue">false</font>;
+                    <font color="blue">break</font>;
+                }
+            }
+            
+            <font color="blue">if</font> (prime)
+            {
+                max = i;
+            }
+        }
+    }
+    
+    cout << max << endl;
+}
+                    </code></pre></p>
+                <p>&nbsp;</p>
+                <p>There are many more efficient ways to determine if a number is prime. My method of choice is utilising the Sieve of Erasmus (coming soon to a Project Euler solution near you). Since this problem deals with multiples however, we don't really even need to check if a number is prime. Rather, we just divide our really big number by everything we can until we have its largest prime factor.</p>
+                <pre><code>
+<font color="blue">&#35;include</font> <font color=#700000>&lt;iostream&gt;</font>
+<font color="blue">using namespace</font> std;
+
+
+}
+                </code></pre></p>
+                <p>&nbsp;</p>
+                <p>I'm just going to say it: I think this is a dumb solution. If the problem had to do with only finding one Fibonacci number, then sure, a closed-form solution would blow a standard one out of the water. However, the loop is only reduced by a factor of three (and the I'm pretty sure one of the 10 Commandments says something about scalar reductions in complexity being made-up). Not only that, but this method requires not one, but two function calls for each number. The stack traces probable take a lot longer than running through two extra iterations of the loop. This problem is certainly an instance of everyone getting too obsessed with proving their math acumen. </p>
+                <p>&nbsp;</p>
+            </div>
+		<div id="content_bottom"></div>
+        <div id="footer"><h3><a href="#">back to top</a></h3></div>
+	</div>
+</body>
+</html>
