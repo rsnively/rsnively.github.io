@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+<title>CS 124 Project</title>
+</head>
+
+<body>
+		
+<div id="header">
+        	<div class="logo"></div>
+    <h1>Rory Snively</h1>
+    <h2>CS 124 Project</h2>
+</div>
+
+<div id="bottomContent">
+  <div class="navColumn"> 
+      <!--
+    	<div class="overview">
+        	<p></p>
+      </div>
+      -->
+      <p>&nbsp;&nbsp;&nbsp;<img src="images/diagram.png" width=350 alt="Sequencing insertion diagram"></p>
+    	<div class="link"><a href="home.html">Home</a></div>   
+      <div class="link"><a href="schedule.html">Weekly Schedule</a></div>
+      <div class="link"><a href="w3.html">Week 3</a></div>
+      <div class="link"><a href="w4.html">Week 4</a></div>
+      <div class="link"><a href="#">Week 5</a></div>
+    <div id="navBottom"></div>
+  </div>
+	<div class="contentColumn">
+
+
+
+	<!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Weekly Progress</h1>
+                <p>This week marked the beginning of the actual coding for the project. I began coding the basic sequencer that will be eventually be able to handle insertions as well.</p>
+                <p>One set of functions that I wrote is responsible for representing DNA reads in the most concise way possible. Each read is assigned a number based on its nucleotide sequence. Cytosine corresponds to 0, guanine to 1, adenine to 2, and thymine to 4. We then pretend that a DNA read is a base-4 number, and store its base-10 equivolent.
+                <pre><code>
+<font color="blue">
+#define CYTOSINE 0
+#define GUANINE 1
+#define ADENINE 2
+#define THYMINE 3
+</font>
+<font color="green">
+/**
+ * Given a DNA read in string format (e.g. "AACTGCA..."),
+ * encode it as a base-4 number with:
+ *     C = 0
+ *     G = 1
+ *     A = 2
+ *     T = 3
+ * and return the encoded value.
+ *
+ * For the scope of this project, read lengths will not
+ * exceed 30 base pairs. This corresponds to 4^30 (or about
+ * 10^18) such sequences, so we will use a long long
+ * integer to return them.
+ */</font>
+<font color="blue">long long</font> SequenceRead::encodeRead(string read) {
+	<font color=blue">long long</font> r = 0;
+
+	<font color="blue">for</font> (<font color="blue">int</font> i = 0; i &lt; i &lt; m_length; i++) {
+		r *= 4;
+		<font color="blue">switch</font>(read[i]) {
+			<font color="blue">case</font> 'C': r += CYTOSINE; <font color="blue">break</font>;
+			<font color="blue">case</font> 'G': r += GUANINE; <font color="blue">break</font>;
+			<font color="blue">case</font> 'A': r += ADENINE; <font color="blue">break</font>;
+			<font color="blue">case</font> 'T': r += THYMINE; <font color="blue">break</font>;
+			<font color="blue">default</font>: <font color="blue">return</font> -1;
+		}
+	}
+
+	<font color="blue">return</font> r;
+}
+                </code></pre></p>
+                <p>Using this method (and a similar method for decoding), the SequenceRead class contains all of the necessary information pertaining to a single sequence. These are used to create the ReferenceGenome class, which is nothing more than a hash table on all possible sequences (currently I am using length 5, and will eventually extend perhaps as high as 30, although this may push the memory limits of my computer).</p>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+    
+  
+    	<!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Plan for Next Week</h1>
+                <p>Next week, I will use the backbone objects I have created to properly sequence a small "genome." Once this prototype is working, it is only a matter of adding insertions, and then scaling up.</p>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+    
+    
+    
+    
+    <!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Grade for Week</h1>
+                <p><b>B-</b>: Some significant code got written, but I have not fully implemented the sequencer yet. Fortunately, the only thing holding me back is scalability, which I have alloted time for in the coming weeks anyways.</p>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+    
+    <!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Problems That Arose This Week</h1>
+                <p>I can already see that it will be troublesome to deal with the many number of reads that must be hashed depending on the length of the reference genome and the length of the reads.</p>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+    
+    <!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Problems Solved This Week</h1>
+                <p>Creating the backbone of the sequencer.</p>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+
+
+
+
+	</div>
+
+</div>
+             
+</body>
+</html>
