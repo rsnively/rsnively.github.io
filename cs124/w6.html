@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+<title>CS 124 Project</title>
+</head>
+
+<body>
+		
+<div id="header">
+        	<div class="logo"></div>
+    <h1>Rory Snively</h1>
+    <h2>CS 124 Project</h2>
+</div>
+
+<div id="bottomContent">
+  <div class="navColumn"> 
+      <!--
+    	<div class="overview">
+        	<p></p>
+      </div>
+      -->
+      <p>&nbsp;&nbsp;&nbsp;<img src="images/diagram.png" width=350 alt="Sequencing insertion diagram"></p>
+    	<div class="link"><a href="home.html">Home</a></div>   
+      <div class="link"><a href="schedule.html">Weekly Schedule</a></div>
+      <div class="link"><a href="w3.html">Week 3</a></div>
+      <div class="link"><a href="w4.html">Week 4</a></div>
+      <div class="link"><a href="w5.html">Week 5</a></div>
+      <div class="link"><a href="#">Week 6</a></div>
+    <div id="navBottom"></div>
+  </div>
+	<div class="contentColumn">
+
+
+
+	<!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Weekly Progress</h1>
+            <p>Although it hasn't been pushed to its limits yet, I believe my project contains all the code it needs to reconstruct a sequence of reads based on a reference genome. Building on the ReferenceGenome class from last week, I have created two important functions:</p>
+            <br>
+            <p><b>Indexing the genome:</b></p>
+            <pre><code>
+<font color="green">/**
+ * Fill in the index structure of the ReferenceGenome object,
+ * to facilitate future lookups. Eventually this will be
+ * passed a file, instead of just a string of nucleotides.
+ */</font>
+<font color="blue">void</font> ReferenceGenome::fill(string genome) {
+
+  <font color="green">// For each sequence of 10 base pairs...</font>
+  <font color="blue">for</font> (<font color="blue">long long</font> i = 0; i &lt; genome.size() - 9; i++) {
+  
+    <font color="green">// Place the location number into the index for the base
+    // pair sequence.</font>
+    string read = genome.substr(i, 10);
+    index.at(encodeRead(read)).push_back(i);
+  }
+}
+            </pre></code>
+            <p><b>Finding the location of a read within the reference genome:</b></p>
+            <pre><code>
+<font color="green">/**
+ * Given a sequence read, this method breaks up the read into
+ * appropriate chunks given the number of allowed differences
+ * between the reference genome and our samples. Then it
+ * finds the most probable location of the read, or returns
+ * -1 if some mistake is detected.
+ */</font>
+<font color="blue">long long</font> ReferenceGenome::find(string read) {
+  
+  <font color="green">// If the read is not of length 30: Error.</font>
+  <font color="blue">if</font> (read.size() != 30) {
+    <font color="blue">return</font> -1;
+  }
+  
+  <font color="green">// For each of the three chunks of the read.</font>
+  <font color="blue">for</font> (<font color="blue">int</font> r = 0; r &lt; 3; r++) {
+    <font color="green">// Get the locations of  segment in question.</font>
+    vector&lt;<font color="blue">long long</font>&gt;v =
+      index[encodeRead(read.substr(r*10, 10))];
+    
+    <font color="green">// For each location...</font>
+    <font color="blue">for</font> (vector&lt;<font color="blue">long long</font>&gt;::iterator it = v.begin();
+         it != v.end(); it++) {
+      
+      <font color="green">// After making sure the full read would fit in at the
+      // given location, check to see if putting the entire
+      // read at this location would meet the error
+      // threshold. Return this location if so. </font>
+      <font color="blue">if</font> ((*it &lt;= ref.length() - 30 + r*10) &&
+          (*it - 10*r &gt;= 0) &&
+          (numDiff(read, ref.substr(*it - r*10, 30)) &lt;= 2)) {
+        <font color="blue">return</font> *it - r*10;
+      }
+    }
+  }
+  
+  <font color="green">// If no decent match is found: Error.</font>
+  <font color="blue">return</font> -1;
+}
+            </pre></code>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+    
+  
+    	<!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Plan for Next Week</h1>
+                <p>Next week I will extend this structure to accept genomes of length up to 3 billion (from some junk file). Then I will attempt to make this whole thing work with insertions.</p>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+    
+    
+    
+    
+    <!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Grade for Week</h1>
+                <p><b>B</b>: There was definitely a lot of quality code written this week. I also have a pretty good idea how to cope with insertions. However, at this point I would have wished to be dealing with actual-sized genomes.</p>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+    
+    <!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Problems That Arose This Week</h1>
+                <p>Extending the code to tackle large amounts of data, as well as insertions.</p>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+    
+    <!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Problems Solved This Week</h1>
+                <p>Creating the functionality for storing and looking up reads in a reference genome, thus determining where they should go.</p>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+
+
+
+
+	</div>
+
+</div>
+             
+</body>
+</html>
