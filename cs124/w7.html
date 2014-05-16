@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+<title>CS 124 Project</title>
+</head>
+
+<body>
+		
+<div id="header">
+        	<div class="logo"></div>
+    <h1>Rory Snively</h1>
+    <h2>CS 124 Project</h2>
+</div>
+
+<div id="bottomContent">
+  <div class="navColumn"> 
+      <!--
+    	<div class="overview">
+        	<p></p>
+      </div>
+      -->
+      <p>&nbsp;&nbsp;&nbsp;<img src="images/diagram.png" width=350 alt="Sequencing insertion diagram"></p>
+    	<div class="link"><a href="home.html">Home</a></div>   
+      <div class="link"><a href="schedule.html">Weekly Schedule</a></div>
+      <div class="link"><a href="w3.html">Week 3</a></div>
+      <div class="link"><a href="w4.html">Week 4</a></div>
+      <div class="link"><a href="w5.html">Week 5</a></div>
+      <div class="link"><a href="w6.html">Week 6</a></div>
+      <div class="link"><a href="#">Week 7</a></div>
+    <div id="navBottom"></div>
+  </div>
+	<div class="contentColumn">
+
+
+
+	<!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Weekly Progress</h1>
+            <p>Much progress was made this week. First off, although the project has yet to be scaled to the size of the human genome, I believe that this will be easily achieved, as it now accepts the genome as a file:</p>
+            &nbsp;
+            <p><b>Indexing the genome (from a file)</b></p>
+            <pre><code>
+<font color="green">/**
+ * Fill in the reference genome index with the data from the
+ * supplied file. Every 10 character string's location is
+ * stored in the index for easy lookup.
+ */</font>
+<font color="blue">void</font> ReferenceGenome::fill(string filename) {
+  <font color="green">// Store the name of the file for future lookups.</font>
+  file = filename;
+  
+  ifstream f(filename);
+  if (f.is_open()) {
+    string read = <font color="red">""</font>;
+    <font color="blue">long long</font> fileLoc = 0;
+    <font color="blue">char</font> c;
+    
+    <font color="blue">while</font> (!f.eof()) {
+      c = f.get();
+      <font color="blue">if</font> (c != <font color="red">'A'</font> &amp;&amp; c != <font color="red">'C'</font> &amp;&amp; c != <font color="red">'T'</font> &amp;&amp; c != <font color="red">'G'</font>) {
+        <font color="blue">continue</font>;
+      }
+      read += c;
+      
+      <font color="green">// We are interested in sequences of length 10, so
+      // once we obtain a character, we remove the first
+      // character in the old read.</font>
+      <font color="blue">if</font> (read.length() &gt; 10) {
+        read = read.substr(1, 10);
+      }
+      
+      <font color="green">// Put this sequence into our index.</font>
+      <font color="blue">if</font> (read.length() == 10) {
+        index.at(encodeRead(read)).push_back(fileLoc - 9);
+      }
+      
+      fileLoc++;
+    }
+    
+    f.close();
+  }
+  <font color="blue">else</font> {
+    cout &lt;&lt; <font color="red">"Unable to open file: "</font> &lt;&lt; filename &lt;&lt; endl;
+  }
+}
+            </pre></code>
+            <p><b>Determining if we have a match (now with file I/O and insertions!)</b></p>
+            <pre><code>
+<font color="green">/**
+ * Given a read of length 30, returns its likely location in
+ * the reference genome (given that it may contain up to two
+ * insertions).
+ */</font>
+<font color="blue">long long</font> ReferenceGenome::find(string read) {
+  <font color="green">// Make sure read is appropriately sized.</font>
+  <font color="blue">if</font> (read.size() != 30) {
+    <font color="blue">return</font> -1;
+  }
+  
+  <font color="green">// For each of the sub-sequences of the read...</font>
+  <font color="blue">for</font> (<font color="blue">int</font> r = 0; r &lt; 3; r++) {
+    vector&lt;<font color="blue">long long</font>&gt; v =
+          index[encodeRead(read.substr(r*10, 10))];
+    
+    <font color="green">// For every location the sub-sequence is found...</font>
+    <font color="blue">for</font> (vector&lt;<font color="blue">long long</font>&gt;::iterator it = v.begin();
+         it != v.end(); it++) {
+      <font color="green">// Determine where the read would have to start for
+      // this location to be the true location, and make
+      // sure it doesn't pass the beginning of the genome.</font>
+      <font color="blue">long long</font> startLoc = (*it) - 10*r;
+      <font color="blue">if</font> (startLoc &lt; 0) {
+        <font color="blue">continue</font>;
+      }
+      
+      <font color="green">// Open the genome file to get the true sequence at
+      // this location.</font>
+      ifstream f(file);
+      <font color="blue">if</font> (f.is_open()) {
+        <font color="blue">char</font> buffer[31];
+        f.seekg(startLoc);
+        f.read(buffer, 30);
+        buffer[31] = <font color="red">'\0'</font>;
+        
+        <font color="green">// Make sure the read did not extend past the end
+        // of the genome, and see if there were 2 or fewer
+        // insertions.</font>
+        <font color="blue">if</font> (f.gcount() == 30 &amp;&amp;
+            numInsertions(read, buffer, r) &lt;= 2) {
+          <font color="blue">return</font> startLoc;
+        }
+        f.close();
+      }
+      <font color="blue">else</font> {
+        cout &lt;&lt; <font color="red">"ERROR: Unable to open file for find\n"</font>;
+        <font color="blue">return</font> -1;
+      }
+    }
+  }
+  
+  <font color="blue">return</font> -1;
+}
+            </pre></code>
+            <p>Furthermore, we now have a means of detecting the number of insertions that have occurred in a read of length 30:</p>
+            &nbsp;
+            <p><b>Insertion Detection</b></p>
+            <pre><code>
+<font color="green">/**
+ * Returns how many insertions must have taken place for
+ * these two strings to be in the same location in the genome
+ * It is important to distinguish which string is the read
+ * because this is the one in which we will allow insertions.
+ *
+ * We also include the "correct" sub-sequence which describes
+ * which sub-sequence of the read has no mismatches within
+ * the genome, as this will determine how we count insertions.
+ */</font>
+<font color="blue">int</font> numInsertions(string read, string genome, int correct) {
+  <font color="blue">if</font> (read.length() != 30 || genome.length() != 30) {
+    cout &lt;&lt; <font color="red">"ERROR: Sequences not of expected length\n"</font>;
+    <font color="blue">return</font> -1;
+  }
+  
+  <font color="blue">switch</font> (correct) {
+    <font color="blue">case</font> 0: <font color="blue">return</font> numInsertionsR1(read, genome);
+    <font color="blue">case</font> 1: <font color="blue">return</font> numInsertionsR2(read, genome);
+    <font color="blue">case</font> 2: <font color="blue">return</font> numInsertionsR3(read, genome);
+  }
+  
+  cout &lt;&lt; <font color="red">"ERROR: Unknown sub-sequence\n"</font>;
+  <font color="blue">return</font> -1;
+}
+
+<font color="green">/**
+ * Helper function for numInsertions(...)
+ *
+ * Given that the first sub-sequence of the read has no
+ * insertions, determines how many insertions have taken
+ * place in the rest of the string.
+ */</font>
+<font color="blue">int</font> numInsertionsR1(string read, string genome) {
+  <font color="blue">int</font> count = 0;
+  
+  <font color="blue">for</font> (<font color="blue">int</font> i = 10; i &lt; 30; i++) {
+    <font color="blue">if</font> (read[i] != genome[i-count]) {
+      count++;
+    }
+  }
+  
+  <font color="blue">return</font> count;
+}
+
+<font color="green">/**
+ * Helper function for numInsertions(...)
+ *
+ * Given that the second sub-sequence of the read has no
+ * insertions, determines how many insertions have taken
+ * place in the rest of the string.
+ */</font>
+<font color="blue">int</font> numInsertionsR2(string read, string genome) {
+  <font color="blue">int</font> frontCount = 0;
+  <font color="blue">int</font> backCount = 0;
+  
+  <font color="blue">for</font> (<font color="blue">int</font> i = 9; i &gt;= 0; i--) {
+    <font color="blue">if</font> (read[i] != genome[i+frontCount]) {
+      frontCount++;
+    }
+  }
+  
+  <font color="blue">for</font> (<font color="blue">int</font> i = 20; i &lt; 30; i++) {
+    <font color="blue">if</font> (read[i] != genome[i-backCount]) {
+      backCount++;
+    }
+  }
+  
+  <font color="blue">return</font> frontCount + backCount;
+}
+
+<font color="green">/**
+ * Helper function for numInsertions(...)
+ *
+ * Given that the last sub-sequence of the read has no
+ * insertions, determines how many insertions have taken
+ * place in the rest of the string.
+ */</font>
+<font color="blue">int</font>numInsertionsR3(string read, string genome) {
+  <font color="blue">int</font> count = 0;
+  
+  <font color="blue">for</font> (<font color="blue">int</font> i = 0; i &gt;= 0; i--) {
+    <font color="blue">if</font> (read[i] != genome[i+count]) {
+      count++;
+    }
+  }
+ 
+  <font color="blue">return</font> count;
+}
+            </pre></code>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+    
+  
+    	<!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Plan for Next Week</h1>
+                <p>Next week we take this thing big (up to 3 billion hopefully!) and deal with any scalability issues that arise.</p>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+    
+    
+    
+    
+    <!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Grade for Week</h1>
+                <p><b>A-</b>: The goal for this week was to get this thing up to scale, which was not accomplished. But the file I/O will make that much easier. Also I did a lot of insertion work this week which was supposed to take place later.<p>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+    
+    <!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Problems That Arose This Week</h1>
+                <p>None.</p>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+    
+    <!--Start Content Box -->
+      <div class="contentTop"></div>
+      <div class="contentMain"> 
+            <h1>Problems Solved This Week</h1>
+                <p>Insertions!</p>
+     </div>
+     <div class="contentBottom"></div>
+   	<!--End Content Box -->
+
+
+
+
+	</div>
+
+</div>
+             
+</body>
+</html>
